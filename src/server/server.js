@@ -1,10 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 
-const { socketController } = require('../sockets/controller');
+const { socketController } = require('./controllers/controller');
 
 class Server {
-
     constructor() {
         this.app    = express();
         this.port   = process.env.PORT;
@@ -16,7 +15,7 @@ class Server {
         // Middlewares
         this.middlewares();
 
-        // Rutas de mi aplicación
+        // Route's app
         this.routes();
 
         // Sockets
@@ -24,36 +23,26 @@ class Server {
     }
 
     middlewares() {
-
         // CORS
         this.app.use( cors() );
 
-        // Directorio Público
+        // Public folder
         this.app.use( express.static('public') );
-
     }
 
     routes() {
-        
-        // this.app.use( this.paths.auth, require('../routes/auth'));
-        
+        // this.app.use( this.paths.auth, require('../routes/auth'));        
     }
 
     sockets() {
-
         this.io.on('connection', socketController );
-
     }
 
     listen() {
         this.server.listen( this.port, () => {
-            console.log('Servidor corriendo en puerto', this.port );
+            console.log('Server listening on port', this.port );
         });
     }
-
 }
-
-
-
 
 module.exports = Server;
