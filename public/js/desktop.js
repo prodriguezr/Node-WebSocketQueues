@@ -3,6 +3,7 @@ const lblDesktop       = document.querySelector('#lblDesktop');
 const btnNextTicket    = document.querySelector('button');
 const lblServingTicket = document.querySelector('small');
 const divAlert         = document.querySelector('.alert');
+const lblPendings      = document.querySelector('#lblPendings');
 
 const searchParams = new URLSearchParams(window.location.search);
 
@@ -14,6 +15,8 @@ if (!searchParams.has('desktop')) {
 const desktop = searchParams.get('desktop');
 
 lblDesktop.innerText = desktop;
+
+document.title = `Queue's App - ${desktop}`;
 
 const socket = io();
 
@@ -47,6 +50,6 @@ btnNextTicket.addEventListener('click', () => {
     });
 });
 
-socket.on('last-ticket', (lastTicket) => {
-    //    lblNewTicket.innerHTML = `Ticket ${lastTicket}`;
+socket.on('queue-length', (payload) => {
+    lblPendings.innerHTML = `Ticket ${lastTicket}`;
 });

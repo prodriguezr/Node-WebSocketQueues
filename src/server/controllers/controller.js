@@ -3,14 +3,17 @@ const TicketControl = require("../../models/ticket-control");
 const ticketControl = new TicketControl();
 
 const socketController = (socket) => {
+    socket.emit('current-status', ticketControl.lastFour);
+    socket.broadcast.emit('queue-length', ticketControl.tickets.length);
+    
     socket.on('request-ticket', (payload, callback) => {
         const next = ticketControl.next();
-
+        
         callback(next);
     });
-
+    
     socket.emit('last-ticket', ticketControl.last);
-
+    
     socket.on('serve-ticket', ({ desktop }, callback) => {
         if (!desktop) {
             return callback({
@@ -27,12 +30,15 @@ const socketController = (socket) => {
                 msg: 'No more pending tickets'
             });
         }
-
+        
+        socket.emit('current-status', ticketControl.lastFour);
+        
+        socket.broadcast.emit('queue-length', ticketControl.tickets.length);
+        
         callback({
             ok: true,
             ticket
         });
-        
     });
 }
 
